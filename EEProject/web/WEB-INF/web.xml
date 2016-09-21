@@ -3,6 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_3_1.xsd"
          version="3.1">
+
+
     <servlet>
         <servlet-name>ServeletOne</servlet-name>
         <servlet-class>servelets.ServeletOne</servlet-class>
@@ -11,6 +13,28 @@
         <servlet-name>CalcServelet</servlet-name>
         <servlet-class>servelets.calc.CalcServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ServeletWithCookies</servlet-name>
+        <servlet-class>servelets.ServeletWithCookies</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ServeletReadCookies</servlet-name>
+        <servlet-class>servelets.ServeletReadCookies</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>JSPOne</servlet-name>
+        <jsp-file>/jsp/JSPOne.jsp</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>Main</servlet-name>
+        <jsp-file>/jsp/Main.jsp</jsp-file>
+    </servlet>
+    <servlet>
+        <servlet-name>Test</servlet-name>
+        <jsp-file>/jsp/Test.jsp</jsp-file>
+    </servlet>
+
+
 
     <servlet-mapping>
         <servlet-name>ServeletOne</servlet-name>
@@ -20,10 +44,39 @@
         <servlet-name>CalcServelet</servlet-name>
         <url-pattern>/calc</url-pattern>
     </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServeletWithCookies</servlet-name>
+        <url-pattern>/addcookies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ServeletReadCookies</servlet-name>
+        <url-pattern>/readcookies</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>JSPOne</servlet-name>
+        <url-pattern>/jsp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Main</servlet-name>
+        <url-pattern>/Main.jsp</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Test</servlet-name>
+        <url-pattern>/Test.jsp</url-pattern>
+    </servlet-mapping>
 
     <error-page>
         <error-code>404</error-code>
         <location>/html/404.html</location>
     </error-page>
 
+    <resource-ref>
+        <res-ref-name>jdbc/Library</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+
 </web-app>
+

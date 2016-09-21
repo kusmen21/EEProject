@@ -1,13 +1,20 @@
 package servelets;
 
 
+import sn.Aggregator;
+
+import javax.naming.InitialContext;
 import javax.servlet.ServletConfig;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.sql.DataSource;
 import java.io.*;
 import java.nio.charset.Charset;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.Enumeration;
 
 
@@ -59,13 +66,16 @@ public class ServeletOne extends HttpServlet
 
             out.println(getHtmlFromFile("for_ServeletOne_end.html"));
         }
-        catch (Exception e) {}
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private String getHtmlFromFile(String filename)
     {
         StringBuilder stringBuilder = new StringBuilder();
-        try (FileInputStream reader = new FileInputStream("D:\\Projects\\EEProject\\web\\html\\" + filename))
+        try (FileInputStream reader = new FileInputStream("D:\\EEProject\\EEProject\\src\\html\\" + filename))
         {
             byte[] buffer = new byte[reader.available()];
             reader.read(buffer);
