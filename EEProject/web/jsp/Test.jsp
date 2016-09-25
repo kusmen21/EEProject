@@ -4,6 +4,7 @@
 <%@ page import="java.sql.ResultSet" %>
 <%@ page import="javax.sql.DataSource" %>
 <%@ page import="javax.naming.Context" %>
+<%@ page import="sn.SQLHelper" %>
 <%--
 СОЗДАНИЕ ФРЕЙМА И РАЗМЕЩЕНИЕ ИНФОРМАЦИИ В НЕМ
 --%>
@@ -34,6 +35,7 @@
     {
         out.println("<h1>" + e.toString() + "<h1>");
     }
+    out.println("<br>" + SQLHelper.executeQuery("select * from users"));
 %>
 </body>
 </html>

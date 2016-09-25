@@ -1,6 +1,7 @@
 package sn;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class User
@@ -15,9 +16,20 @@ public class User
         setUserType();
     }
 
-    public void setUserType()
+    private void setUserType()
     {
-        userType = UserType.valueOf(SQLHelper.executeQuery("SELECT (type) FROM users;").get("type").get(0));
+        Map<String, List<String>> map = SQLHelper.executeQuery("SELECT (type) FROM users WHERE id = " + id);
+        List<String> list = map.get("type");
+        String temp = list.get(0);
+
+        if (temp.equalsIgnoreCase("admin")) {
+            userType = UserType.ADMIN;
+            return;
+        }
+        if (temp.equalsIgnoreCase("user")) {
+            userType = UserType.USER;
+            return;
+        }
     }
 
     public UserType getUserType()

@@ -1,29 +1,20 @@
 package sn;
 
+import sn.exception.NullValueException;
+import sn.exception.UnexpectedException;
+import sn.exception.UniqueValueException;
+
 import javax.naming.InitialContext;
 import javax.sql.DataSource;
 import java.sql.*;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+
 
 public class SQLHelper
 {
-    private static SQLHelper instance;
     private static Statement statement;
 
-
-    public static void test()
-    {
-        try {
-            System.out.println(statement.executeQuery("select * from books"));
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private SQLHelper()
+    static
     {
         try
         {
@@ -38,16 +29,7 @@ public class SQLHelper
         }
     }
 
-    public static SQLHelper getInstance()
-    {
-        synchronized (SQLHelper.class)
-        {
-            if (instance == null) {
-                instance = new SQLHelper();
-            }
-        }
-        return instance;
-    }
+    private SQLHelper(){}
 
     public static void execute(String command)
     {
@@ -69,12 +51,12 @@ public class SQLHelper
 
             while (rs.next()) {
                 for (int columnNumber = 1; columnNumber <= columnsCount; columnNumber++) {
-                    String tableName = data.getTableName(columnNumber);
-                    if (!table.containsKey(tableName)) {
+                    String columnName = data.getColumnName(columnNumber);
+                    if (!table.containsKey(columnName)) {
                         List<String> values = new ArrayList<>();
-                        table.put(tableName, values);
+                        table.put(columnName, values);
                     }
-                    table.get(tableName).add(rs.getString(columnNumber));
+                    table.get(columnName).add(rs.getString(columnNumber));
                 }
             }
         }
@@ -84,5 +66,58 @@ public class SQLHelper
         }
 
         return table;
+    }
+
+    public static String getResultAsString(String command)
+    {
+        Map<String, List<String>> table = executeQuery(command);
+        StringBuilder sb = new StringBuilder();
+
+        for(Map.Entry<String, List<String>> pair : table.entrySet())
+        {
+            sb.append(pair.getKey()).append(" = ").append(pair.getValue().toString()).append("\n\r");
+        }
+        return sb.toString();
+    }
+
+    public static boolean isSomethingFound(String command)
+    {
+        Map<String, List<String>> table = executeQuery(command);
+        return !table.isEmpty();
+    }
+
+    public static void addUser(String fname, String email, String password)
+            throws NullValueException, UniqueValueException, UnexpectedException
+    {
+        try
+        {
+            if (    fname != null & !fname.equals("") &
+                    password != null & !password.equals("") &
+                    email != null & !email.equals(""))
+            {
+                if (isSomethingFound("SELECT (id) FROM users where email = '" + email + "'"))
+                {
+                    throw new UniqueValueException();
+                }
+
+                SQLHelper.execute("INSERT INTO users (type, email, password) VALUES " +
+                        "('USER', '" + email + "', '" + password + "')");
+
+                int id = Integer.parseInt(SQLHelper.executeQuery
+                        ("SELECT (id) FROM users WHERE email = '" + email + "'").get("id").get(0));
+
+                SQLHelper.execute("INSERT INTO info (info_id, fname) VALUES " +
+                        "('" + id +  "', '" + fname + "')");
+            }
+            else
+            {
+                throw new NullValueException();
+            }
+        }catch (RuntimeException e)
+        {
+            throw new UnexpectedException();
+        }
+
+
     }
  }
